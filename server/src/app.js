@@ -1,18 +1,18 @@
 let express = require('express');
-// import body parser
 let bodyParser = require('body-parser');
+let cors = require('cors');
 const { sequelize } = require('./models');
 const config = require('./config/config');
 
-
 const app = express();
-// use body parser middleware
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors())
 
-// import routes
+
 require('./routes')(app);
-
 
 let port = config.port;
 
