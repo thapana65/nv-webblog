@@ -21,14 +21,45 @@ module.exports = {
             })
         }
     },
-    put(req, res){
-        res.send('แก้ไข user คนที่ '+ req.params.userId + ' ข้อมูลที่แก้ไข' + JSON.stringify(req.body));
+    async put(req, res){
+        try {
+            await User.update(req.body, {
+                where: {
+                    id: req.params.userId
+                }
+            });
+            res.send(req.body);
+        } catch (err) {
+            res.status(500).send({
+                error: 'มีข้อผิดพลาดในการแก้ไข user'
+            })
+        }
     },
-    remove(req, res){
-        res.send('ลบ user คนที่ ' + req.params.userId);
+    async remove(req, res){
+        try{
+            const user = User.findByPk(req.params.userId);
+            if(!user){
+                return res.status(403).send({
+                    error: 'ไม่มี user นี้ในระบบ'
+                })
+            }
+            await user.destroy();
+            res.send(user);
+        }catch(err){
+            res.status(500).send({
+                error: 'มีข้อผิดพลาดในการลบ user'
+            })
+        }
     },
-    show(req, res){
-        res.send('ดูข้อมูล user ทุกคน');
+    async show(req, res){
+        try{
+            const user = await User.findByPk(req.params.userId);
+            res.send(user);
+        }catch(err){
+            res.status(500).send({
+                error: 'มีข้อผิดพลาดในการดึงข้อมูล user'
+            })
+        }
     }
 }
     
